@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Reportes generados
+reports/
+
+# Archivos temporales
+*.log
+
+# Configuración local
+.env
+
+# Mac
+.DS_Store

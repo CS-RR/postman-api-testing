@@ -1,0 +1,372 @@
+{
+  "info": {
+    "_postman_id": "af89e4a2-e87a-4692-a714-660a38b03da6",
+    "name": "PetStore API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "34864214",
+    "_collection_link": "https://go.postman.co/collection/34864214-af89e4a2-e87a-4692-a714-660a38b03da6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": []
+    },
+    {
+      "name": "Pets",
+      "item": [
+        {
+          "name": "Create Pet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json(); //convert JSON in an object Javascript\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet ID is correct\", function () {\r",
+                  "    pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"pet_id\")));//read\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet name is correct\", function () {\r",
+                  "    pm.expect(jsonData.name).to.eql(pm.iterationData.get(\"pet_name\"));\r",
+                  "    //.to.eql(pm.environment.get(\"pet_name\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet status is correct\", function () {\r",
+                  "    pm.expect(jsonData.status).to.eql(pm.iterationData.get(\"pet_status\"));\r",
+                  "    //.to.eql(pm.environment.get(\"pet_status\"));\r",
+                  "});\r",
+                  "\r",
+                  "//save variables\r",
+                  "pm.environment.set(\"pet_id\",jsonData.id);\r",
+                  "pm.environment.set(\"pet_name\",jsonData.name);\r",
+                  "pm.environment.set(\"pet_status\",jsonData.status);\r",
+                  "pm.environment.set(\"pet_id\", jsonData.id);\r",
+                  "\r",
+                  "console.log(\"Pet ID recibido:\", jsonData.id); //show\r",
+                  "console.log(\"CSV:\", pm.iterationData.get(\"pet_name\"));\r",
+                  "console.log(\"ENV:\", pm.environment.get(\"pet_name\"));\r",
+                  "console.log(\"RESP:\", jsonData.name);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "//Generate random id\r",
+                  "const randomId = Math.floor(Math.random() * 100000);\r",
+                  "pm.environment.set(\"pet_id\", randomId);\r",
+                  "\r",
+                  "//Generate random Pet name\r",
+                  "//const randomName = \"Pet_\" + Date.now();\r",
+                  "//pm.environment.set(\"pet_name\",randomName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": {{pet_id}},\r\n    \"name\": \"{{pet_name}}\",\r\n    \"status\": \"{{pet_status}}\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet ID is correct\", function () {\r",
+                  "    pm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"pet_id\")));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet name is correct\", function () {\r",
+                  "    pm.expect(jsonData.name).to.eql(pm.environment.get(\"pet_name\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Pet status is correct\", function () {\r",
+                  "    pm.expect(jsonData.status).to.eql(pm.environment.get(\"pet_status\"));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pet/{{pet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pet",
+                "{{pet_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Pet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains correct pet id\", function () {\r",
+                  "\tpm.expect(jsonData.id).to.eql(Number(pm.environment.get(\"pet_id\")));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains correct pet name\", function () {\r",
+                  "\tpm.expect(jsonData.name).to.eql(pm.environment.get(\"pet_update\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains correct pet status\", function () {\r",
+                  "\tpm.expect(jsonData.status).to.eql(pm.iterationData.get(\"pet_status_updated\"));\r",
+                  "    //.to.eql(pm.environment.get(\"pet_status_updated\"));\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": {{pet_id}},\r\n    \"name\": \"{{pet_update}}\",\r\n    \"status\": \"{{pet_status_updated}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Pet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "const deletedPetId = Number(jsonData.message);\r",
+                  "const expectedPetId = Number(pm.environment.get(\"pet_id\"));\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time less than 2000ms\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains code 200\", function () {\r",
+                  "    pm.expect(jsonData.code).to.eql(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deleted pet id is correct\", function () {\r",
+                  "    pm.expect(deletedPetId).to.eql(expectedPetId);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response type is correct\", function () {\r",
+                  "    pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "api_key",
+                "value": "special-key"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pet/{{pet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pet",
+                "{{pet_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pet After Delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains code 1\", function () {\r",
+                  "    pm.expect(jsonData.code)\r",
+                  "        .to.eql(1);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains error type\", function () {\r",
+                  "    pm.expect(jsonData.type)\r",
+                  "        .to.eql(\"error\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains Pet not found\", function () {\r",
+                  "    pm.expect(jsonData.message)\r",
+                  "        .to.eql(\"Pet not found\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pet/{{pet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pet",
+                "{{pet_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": []
+    },
+    {
+      "name": "Store",
+      "item": []
+    },
+    {
+      "name": "Negative Test",
+      "item": []
+    },
+    {
+      "name": "Regression",
+      "item": []
+    }
+  ]
+}

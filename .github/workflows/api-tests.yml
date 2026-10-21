@@ -26,5 +26,5 @@ jobs:
       - name: Run Postman Collection
         run: |
           newman run Collections/petstore_collection.json \
-          -e Environment/QA.postman_environment.json \
+          -e Environments/QA.postman_environment.json \
           -d Data/pets_data.csv
